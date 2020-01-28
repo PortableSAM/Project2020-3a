@@ -4,6 +4,7 @@ import firebase from "./Fire/Fire";
 import { controlAuth } from "./LoginForm";
 import { useForm } from "react-hook-form";
 
+//fireStore 지정
 const db = firebase.firestore();
 const dbRef = db.collection("User");
 
@@ -11,17 +12,21 @@ export const SignUp = () => {
   const { register, handleSubmit, errors } = useForm();
 
   const onSubmit = data => {
+    //가입유저 이메일, 패스워드 지정
     const email = data.Email;
     const password = data.Password;
+    //firebase Auth 등록
     controlAuth
       .createUserWithEmailAndPassword(email, password)
       .then(user => {
         const userInfo = user;
+        //가입유저 정보 firestore 저장
         dbRef.doc(userInfo.user.uid).set({
           userID: userInfo.user.uid,
           userFirstName: data.firstName,
           userLastName: data.lastName,
           userEmail: userInfo.user.email,
+          //가입시간 Timestamp로 표시
           signupAt: firebase.firestore.Timestamp.fromDate(new Date())
         });
       })

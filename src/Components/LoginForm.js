@@ -1,13 +1,35 @@
 import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import firebase from "./Fire/Fire";
+import { Link } from "react-router-dom";
+
+export const controlAuth = firebase.auth();
 
 export function LoginForm() {
   const { register, handleSubmit, errors } = useForm();
 
   const onSubmit = data => {
     console.log(data);
+    const email = data.Email;
+    const password = data.pass;
+    console.log(email);
+    console.log(password);
+    controlAuth
+      .signInWithEmailAndPassword(email, password)
+      .catch(function(error) {
+        console.error("Failed", error);
+      });
   };
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      const userInfo = user.providerData;
+      console.log(userInfo);
+    } else {
+      return;
+    }
+  });
 
   return (
     <Styles>
@@ -22,6 +44,9 @@ export function LoginForm() {
           {errors.Email && "이메일 양식이 일치하지 않습니다."}
           <input type="password" name="pass" placeholder="P.W" ref={register} />
           <button type="submit">Log In</button>
+          <Link to="/signup">
+            <button type="submit">Sign Up</button>
+          </Link>
         </form>
       </section>
     </Styles>

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import firebase from "./Fire/Fire";
 import { Link } from "react-router-dom";
 
+//firebase Auth 지정
 export const controlAuth = firebase.auth();
 
 export function LoginForm() {
@@ -15,13 +16,14 @@ export function LoginForm() {
     const password = data.pass;
     console.log(email);
     console.log(password);
+    //Login 정보 firebase Auth전달
     controlAuth
       .signInWithEmailAndPassword(email, password)
       .catch(function(error) {
         console.error("Failed", error);
       });
   };
-
+  //firebase Auth 인증상태 관찰자
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       const userInfo = user.providerData;
